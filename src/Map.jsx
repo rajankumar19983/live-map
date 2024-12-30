@@ -2,26 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { MdLocationOn } from "react-icons/md";
-import marker from './assets/react.svg';
-
-const MapRotationControl = () => {
-  const map = useMap();
-
-  useEffect(() => {
-    if (map) {
-      // Apply a CSS transform to rotate the map container
-      map.getContainer().style.transform = 'rotate(0deg)'; // Set initial rotation angle (adjust as needed)
-
-      return () => {
-        // Clean up the rotation if needed
-        map.getContainer().style.transform = ''; // Remove transformation on cleanup
-      };
-    }
-  }, [map]);
-
-  return null;
-};
+import 'leaflet-gesture-handling';
+// import { MdLocationOn } from "react-icons/md";
+// import marker from './assets/react.svg';
 
 const Map = () => {
   const [position, setPosition] = useState(null);
@@ -31,7 +14,6 @@ const Map = () => {
       (pos) => {
         const { latitude, longitude } = pos.coords;
         setPosition([latitude, longitude]);
-        console.log(latitude, longitude);
       },
       (error) => {
         console.error("Error getting location", error);
@@ -53,14 +35,12 @@ const Map = () => {
 
   return position ? (
     <div>
-      <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: '100vh', width: '100vw' }}>
+      <MapContainer center={position} zoom={13} scrollWheelZoom={false} gestureHandling={true} style={{ height: '100vh', width: '100vw' }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {/* MapRotationControl enables map rotation */}
-        <MapRotationControl />
-        <Marker position={position} icon={myIcon}>
+        <Marker position={position}>
           <Popup>
             Your Live Location
           </Popup>
